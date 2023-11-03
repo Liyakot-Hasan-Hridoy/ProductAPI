@@ -52,11 +52,11 @@ static async getAllUsers() {
   });
 }
 
-static async updateUser(userId, name, email, phone, type, gender, occupation, address) {
+static async updateUser(userId, name, email, phone, type, gender, occupation, image, address) {
   return new Promise((resolve, reject) => {
     database.query(
-      'UPDATE users SET name = ?, email = ?, phone = ?, type = ?, gender = ?, occupation = ?, address = ? WHERE id = ?',
-      [name, email, phone, type, gender, occupation, address, userId],
+      'UPDATE users SET name = ?, email = ?, phone = ?, type = ?, gender = ?, occupation = ?, image = ? address = ? WHERE id = ?',
+      [name, email, phone, type, gender, occupation, image, address, userId],
       (error, result) => {
         if (!error) {
           resolve(result); 

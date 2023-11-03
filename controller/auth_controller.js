@@ -155,7 +155,7 @@ class AuthController {
           }
 
           const userId = req.params.userId;
-          const { name, email, phone, type, gender, occupation, address } = req.body;
+          const { name, email, phone, type, gender, occupation, image, address } = req.body;
 
           const existinguser = await AuthModel.updateUser(
             userId,
@@ -191,10 +191,10 @@ class AuthController {
             existinguser.image = req.file.path;
             existinguser.image = null;
           }
-
+          const updateUser = await existinguser.save();
           res.status(200).json({
             success: 'User information updated successfully',
-            existinguser,
+            updateUser,
           });
 
         });
