@@ -146,57 +146,53 @@ class AuthController {
 
     try {
 
-      upload.single("image")(req, res, async (error) => {
+     
+      upload.single("image")(req, res, async (err) => {
+        if (err) {
+          return res.status(400).json({ error: "Image upload faild" });
+        }
 
+        const userId = req.params.userId;
+        const { name, email, phone, type, gender, occupation, image, address } = req.body;
 
-        upload.single("image")(req, res, async (err) => {
-          if (err) {
-            return res.status(400).json({ error: "Image upload faild" });
+        const existinguser = await AuthModel.updateUser(
+          userId,
+          {
+            name,
+            email,
+            phone,
+            type,
+            gender,
+            occupation,
+            image,
+            address,
+          }
+        );
+
+        if (!existinguser) {
+          return res.status(404).json({ error: "User Not Found" });
+        }
+
+        if (req.file) {
+
+          if (existinguser.image) {
+            const imagePath = existinguser.image;
+
+            fs.unlink(imagePath, (err) => {
+              if (err) {
+                console.error("Error Deleting Image:", err);
+              }
+            });
+
           }
 
-          const userId = req.params.userId;
-          const { name, email, phone, type, gender, occupation, image, address } = req.body;
-
-          const existinguser = await AuthModel.updateUser(
-            userId,
-            {
-              name,
-              email,
-              phone,
-              type,
-              gender,
-              occupation,
-              image,
-              address,
-            }
-          );
-
-          if (!existinguser) {
-            return res.status(404).json({ error: "User Not Found" });
-          }
-
-          if (req.file) {
-
-            if (existinguser.image) {
-              const imagePath = existinguser.image;
-
-              fs.unlink(imagePath, (err) => {
-                if (err) {
-                  console.error("Error Deleting Image:", err);
-                }
-              });
-
-            }
-
-            existinguser.image = req.file.path;
-            existinguser.image = null;
-          }
-          const updateUser = await existinguser.save();
-          res.status(200).json({
-            success: 'User information updated successfully',
-            updateUser,
-          });
-
+          existinguser.image = req.file.path;
+          existinguser.image = null;
+        }
+        const updateUser = await existinguser.save();
+        res.status(200).json({
+          success: 'User information updated successfully',
+          updateUser,
         });
 
       });
