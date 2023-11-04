@@ -127,6 +127,8 @@ class AuthController {
 
   // LOGIN USERS END============>>>>>>>>
 
+
+   // GET ALL  USERS START============>>>>>>>>
   // Add this method to your AuthController
   static async getAllUsers(req, res) {
     try {
@@ -142,72 +144,110 @@ class AuthController {
     }
   }
 
+  // GRT SINGLE USER
+
+  // Add this method to your AuthController
+static async getSingleUser(req, res) {
+  try {
+    const userId = req.params.userId;
+
+    // Call a method in your AuthModel to get the single user by ID
+    const user = await AuthModel.getSingleUser(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({
+      success: "User retrieved successfully",
+      data: user,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to retrieve the user" });
+  }
+}
+
+
+  // GET ALL  USERS END============>>>>>>>>
+
+  // GET ALL  USERS END============>>>>>>>>
   static async updateUser(req, res) {
-
     try {
+      const userId = req.params.userId;
 
-      upload.single("image")(req, res, async (error) => {
+      upload.single('image')(req, res, async (error) => {
+        if (error) {
+          return res.status(400).json({ error: 'Image upload failed' });
+        }
 
+        const { name, email, phone, type, gender, occupation, address } = req.body;
 
-        upload.single("image")(req, res, async (err) => {
-          if (err) {
-            return res.status(400).json({ error: "Image upload faild" });
+        const existingUser = await AuthModel.updateUser(
+          userId,
+          name,
+          email,
+          phone,
+          type,
+          gender,
+          occupation,
+          req.file ? req.file.path : null,
+          address
+        );
+
+        if (!existingUser) {
+          return res.status(404).json({ error: 'User Not Found' });
+        }
+
+        if (req.file) {
+          if (existingUser.image) {
+            const imagePath = existingUser.image;
+
+            fs.unlink(imagePath, (err) => {
+              if (err) {
+                console.error('Error Deleting Image:', err);
+              }
+            });
           }
+        }
 
-          const userId = req.params.userId;
-          const { name, email, phone, type, gender, occupation, image, address } = req.body;
-
-          const existinguser = await AuthModel.updateUser(
-            userId,
-            {
-              name,
-              email,
-              phone,
-              type,
-              gender,
-              occupation,
-              image,
-              address,
-            }
-          );
-
-          if (!existinguser) {
-            return res.status(404).json({ error: "User Not Found" });
-          }
-
-          if (req.file) {
-
-            if (existinguser.image) {
-              const imagePath = existinguser.image;
-
-              fs.unlink(imagePath, (err) => {
-                if (err) {
-                  console.error("Error Deleting Image:", err);
-                }
-              });
-
-            }
-
-            existinguser.image = req.file.path;
-            existinguser.image = null;
-          }
-          const updateUser = await existinguser.save();
-          res.status(200).json({
-            success: 'User information updated successfully',
-            updateUser,
-          });
-
+        res.status(200).json({
+          success: 'User information updated successfully',
         });
-
       });
-
     } catch (error) {
-
       console.error(error);
       res.status(500).json({ error: 'Failed to update user information' });
-
     }
   }
+
+
+  // Add this method to your AuthController
+static async searchUsers(req, res) {
+  try {
+    // Get the search query parameter from the request
+    const query =  req.query.query;    //?query= search query
+
+    if (!query) {
+      return res.status(400).json({ error: "Search query is required" });
+    }
+
+    // Call a method in your AuthModel to perform the search
+    const users = await AuthModel.searchUsers(query);
+
+    if (users.length==0) {
+      return res.status(400).json('No User Found');
+    }
+
+    res.status(200).json({
+      success: "Search successful",
+      data: users,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to perform the search" });
+  }
+}
 
 
 };

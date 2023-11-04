@@ -52,21 +52,63 @@ static async getAllUsers() {
   });
 }
 
-static async updateUser(userId, name, email, phone, type, gender, occupation, image, address) {
+
+// Add this method to your AuthModel
+static async getSingleUser(userId) {
   return new Promise((resolve, reject) => {
     database.query(
-      'UPDATE users SET name = ?, email = ?, phone = ?, type = ?, gender = ?, occupation = ?, image = ? address = ? WHERE id = ?',
-      [name, email, phone, type, gender, occupation, image, address, userId],
-      (error, result) => {
+      "SELECT id, name, email, phone, type, gender, occupation, image, address FROM users WHERE id = ?",
+      [userId],
+      (error, results) => {
         if (!error) {
-          resolve(result); 
+          if (results.length > 0) {
+            resolve(results[0]); // Resolve with the single user data
+          } else {
+            resolve(null); // Resolve with null if no user is found
+          }
         } else {
-          reject(error); 
+          reject(error); // Reject with the error
         }
       }
     );
   });
 }
+
+
+static async updateUser(userId, name, email, phone, type, gender, occupation, image, address) {
+  return new Promise((resolve, reject) => {
+    database.query(
+      "UPDATE users SET name = ?, email = ?, phone = ?, type = ?, gender = ?, occupation = ?, image = ?, address = ? WHERE id = ?",
+      [name, email, phone, type, gender, occupation, image, address, userId],
+      (error, result) => {
+        if (!error) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      }
+    );
+  });
+}
+
+
+// Add this method to your AuthModel
+static async searchUsers(query) {
+  return new Promise((resolve, reject) => {
+    database.query(
+      "SELECT id, name, email, phone, type, gender, occupation, image, address FROM users WHERE name LIKE ? OR email LIKE ? OR occupation LIKE ?",
+      [`%${query}%`, `%${query}%`, `%${query}%`],
+      (error, results) => {
+        if (!error) {
+          resolve(results);
+        } else {
+          reject(error);
+        }
+      }
+    );
+  });
+}
+
 
   
 }

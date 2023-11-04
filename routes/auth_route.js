@@ -4,7 +4,9 @@ const router = require("express").Router();
 
 router.post("/register",authController.registerController);
 router.post("/login",authController.logincontroller);
-router.get('/users', authController.getAllUsers);
+router.get('/users',verifytoken, authController.getAllUsers);
+router.get("/user/:userId", verifytoken, authController.getSingleUser);
 router.put('/updateuser/:userId',verifytoken, authController.updateUser);
+router.get("/search", authController.searchUsers);
 
  module.exports = router;
