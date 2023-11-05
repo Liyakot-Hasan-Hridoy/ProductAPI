@@ -16,6 +16,8 @@ class AuthModel {
       );
     });
   };
+
+  
   static async login(email, password) {
     return new Promise((resolve, reject) => {
       database.query(
