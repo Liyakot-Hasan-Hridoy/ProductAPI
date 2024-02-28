@@ -77,8 +77,8 @@ class AuthController {
     } catch (error) {
       console.log(error);
     }
-  }
-  // SINE UP USERS END============>>>>>>>>
+  } // SINE UP USERS END============>>>>>>>>
+
 
   // LOGIN USERS START============>>>>>>>>
   static async logincontroller(req, res) {
@@ -123,13 +123,10 @@ class AuthController {
     } catch (error) {
       console.log(error);
     }
-  }
-
-  // LOGIN USERS END============>>>>>>>>
+  }// LOGIN USERS END============>>>>>>>>
 
 
-   // GET ALL  USERS START============>>>>>>>>
-  // Add this method to your AuthController
+  // GET ALL  USERS START============>>>>>>>>
   static async getAllUsers(req, res) {
     try {
       const users = await AuthModel.getAllUsers(); // Create this method in your AuthModel
@@ -142,36 +139,33 @@ class AuthController {
       console.error(error);
       res.status(500).json({ error: "Failed to retrieve users" });
     }
-  }
+  }// GET ALL  USERS END============>>>>>>>>
 
-  // GRT SINGLE USER
 
-  // Add this method to your AuthController
-static async getSingleUser(req, res) {
-  try {
-    const userId = req.params.userId;
+  // GET SINGLE  USERS START============>>>>>>>>
+  static async getSingleUser(req, res) {
+    try {
+      const userId = req.params.userId;
 
-    // Call a method in your AuthModel to get the single user by ID
-    const user = await AuthModel.getSingleUser(userId);
+      // Call a method in your AuthModel to get the single user by ID
+      const user = await AuthModel.getSingleUser(userId);
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.status(200).json({
+        success: "User retrieved successfully",
+        data: user,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to retrieve the user" });
     }
-
-    res.status(200).json({
-      success: "User retrieved successfully",
-      data: user,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to retrieve the user" });
-  }
-}
+  }// GET SINGLE  USERS END============>>>>>>>>
 
 
-  // GET ALL  USERS END============>>>>>>>>
-
-  // GET ALL  USERS END============>>>>>>>>
+  //UPDATE   USERS START============>>>>>>>>
   static async updateUser(req, res) {
     try {
       const userId = req.params.userId;
@@ -219,35 +213,35 @@ static async getSingleUser(req, res) {
       console.error(error);
       res.status(500).json({ error: 'Failed to update user information' });
     }
-  }
+  }//UPDATE   USERS END============>>>>>>>>
 
 
-  // Add this method to your AuthController
-static async searchUsers(req, res) {
-  try {
-    // Get the search query parameter from the request
-    const query =  req.query.query;    //?query= search query
+  // SEARCH USERS
+  static async searchUsers(req, res) {
+    try {
+      // Get the search query parameter from the request
+      const query = req.query.query;    //?query= search query
 
-    if (!query) {
-      return res.status(400).json({ error: "Search query is required" });
+      if (!query) {
+        return res.status(400).json({ error: "Search query is required" });
+      }
+
+      // Call a method in your AuthModel to perform the search
+      const users = await AuthModel.searchUsers(query);
+
+      if (users.length == 0) {
+        return res.status(400).json('No User Found');
+      }
+
+      res.status(200).json({
+        success: "Search successful",
+        data: users,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to perform the search" });
     }
-
-    // Call a method in your AuthModel to perform the search
-    const users = await AuthModel.searchUsers(query);
-
-    if (users.length==0) {
-      return res.status(400).json('No User Found');
-    }
-
-    res.status(200).json({
-      success: "Search successful",
-      data: users,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to perform the search" });
-  }
-}
+  }// SEARCH USERS
 
 
 };

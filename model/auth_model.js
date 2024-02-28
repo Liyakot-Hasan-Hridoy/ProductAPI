@@ -1,6 +1,8 @@
 const database = require("../config/dbconnection");
 
 class AuthModel {
+
+   // SINE UP USERS START============>>>>>>>>
   static async createUser(name, email, phone, password, type, gender, occupation, image, address) {
     return new Promise((resolve, reject) => {
       database.query(
@@ -15,9 +17,10 @@ class AuthModel {
         }
       );
     });
-  };
+  }; // SINE UP USERS END============>>>>>>>>
 
   
+   // LOGIN USERS START============>>>>>>>>
   static async login(email, password) {
     return new Promise((resolve, reject) => {
       database.query(
@@ -36,9 +39,10 @@ class AuthModel {
         }
       );
     });
-  }
+  }// LOGIN USERS END============>>>>>>>>
 
-  // Add this method to your AuthModel
+ 
+  // GET ALL USERS START============>>>>>>>>
 static async getAllUsers() {
   return new Promise((resolve, reject) => {
     database.query(
@@ -52,10 +56,10 @@ static async getAllUsers() {
       }
     );
   });
-}
+}  // GET ALL USERS END============>>>>>>>>
 
 
-// Add this method to your AuthModel
+  // GET SINGLE USERS START============>>>>>>>>
 static async getSingleUser(userId) {
   return new Promise((resolve, reject) => {
     database.query(
@@ -74,9 +78,10 @@ static async getSingleUser(userId) {
       }
     );
   });
-}
+}// GET SINGLE USERS END============>>>>>>>>
 
 
+// GET UPDATE USERS START============>>>>>>>>
 static async updateUser(userId, name, email, phone, type, gender, occupation, image, address) {
   return new Promise((resolve, reject) => {
     database.query(
@@ -91,10 +96,10 @@ static async updateUser(userId, name, email, phone, type, gender, occupation, im
       }
     );
   });
-}
+}// GET UPDATE USERS END============>>>>>>>>
 
 
-// Add this method to your AuthModel
+// GET SEARDH USERS START============>>>>>>>>
 static async searchUsers(query) {
   return new Promise((resolve, reject) => {
     database.query(
@@ -109,7 +114,7 @@ static async searchUsers(query) {
       }
     );
   });
-}
+}// GET SEARDH USERS END============>>>>>>>>
 
 
   
